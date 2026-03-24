@@ -309,13 +309,14 @@ fun MissionItem(
                 )
             }
     ) {
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .fillMaxWidth(if (mision.estaCompletada) 1f else progressAnim.value)
-                .background(if (mision.estaCompletada) Color(0xFF1A0000) else Color(0xFF3A0000))
-                .align(Alignment.CenterStart)
-        )
+        Box(modifier = Modifier.matchParentSize(), contentAlignment = Alignment.CenterStart) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(if (mision.estaCompletada) 1f else progressAnim.value)
+                    .background(if (mision.estaCompletada) Color(0xFF1A0000) else Color(0xFF3A0000))
+            )
+        }
 
         Row(
             modifier = Modifier
