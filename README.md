@@ -2,7 +2,7 @@
 
 # ⚔️ LifeRPG
 
-**Tu progreso personal, gamificado.**
+**Tu progreso personal visual.**
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose_Multiplatform-1.10.0-4285F4?logo=jetpackcompose&logoColor=white)](https://www.jetbrains.com/lp/compose-multiplatform/)
