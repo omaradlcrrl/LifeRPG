@@ -2,6 +2,9 @@ package org.example.liferpg.model
 
 import kotlin.math.min
 import kotlin.math.max
+import liferpg.composeapp.generated.resources.Res
+import liferpg.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.DrawableResource
 
 enum class TipoAtributo(val nombreVisible: String) {
     FUERZA("Fuerza"),
@@ -24,6 +27,15 @@ object CalculadoraAtributos {
     fun calcularPuntos(impacto: NivelImpacto): Float {
         return min(TOPE_DIARIO, impacto.puntos)
     }
+}
+
+fun TipoAtributo.obtenerRecursoIcono(): DrawableResource = when (this) {
+    TipoAtributo.FUERZA -> Res.drawable.fuerza_icono
+    TipoAtributo.SABIDURIA -> Res.drawable.sabiduria_icono
+    TipoAtributo.ENERGIA -> Res.drawable.energia_icono
+    TipoAtributo.ESTRUCTURA -> Res.drawable.estructura_icono
+    TipoAtributo.ILUMINACION -> Res.drawable.iluminacion_icono
+    TipoAtributo.VOLUNTAD -> Res.drawable.voluntad_icono
 }
 
 val actividadesPredefinidas = mapOf(

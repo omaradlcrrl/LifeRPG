@@ -4,8 +4,7 @@ import com.russhwolf.settings.Settings
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class RepositorioProgreso {
-    private val settings: Settings = Settings()
+class RepositorioProgreso(private val settings: Settings = Settings()) {
     private val json = Json { ignoreUnknownKeys = true }
 
     fun guardarAtributosValores(valores: Map<String, Float>) {
@@ -36,11 +35,11 @@ class RepositorioProgreso {
         }
     }
 
-    fun getUltimaFechaAbierta(): Long {
-        return settings.getLong("ultimaFechaAbierta", 0L)
+    fun getUltimaFecha(): String {
+        return settings.getStringOrNull("ultimaFecha") ?: ""
     }
 
-    fun guardarUltimaFechaAbierta(fecha: Long) {
-        settings.putLong("ultimaFechaAbierta", fecha)
+    fun guardarUltimaFecha(fecha: String) {
+        settings.putString("ultimaFecha", fecha)
     }
 }

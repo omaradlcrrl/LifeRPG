@@ -1,4 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -42,9 +42,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.multiplatform.settings)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
+            implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.multiplatform.settings.test)
         }
     }
 }
@@ -80,4 +84,3 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
-

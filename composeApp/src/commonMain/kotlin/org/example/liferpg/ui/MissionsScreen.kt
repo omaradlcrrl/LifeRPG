@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +33,7 @@ import kotlinx.coroutines.launch
 import org.example.liferpg.model.NivelImpacto
 import org.example.liferpg.model.TipoAtributo
 import org.example.liferpg.model.actividadesPredefinidas
+import org.example.liferpg.model.obtenerRecursoIcono
 import org.jetbrains.compose.resources.painterResource
 
 val colorFuerza = Color(0xFFCC1A1A)
@@ -53,6 +57,8 @@ fun obtenerColorAtributo(atributo: TipoAtributo): Color = when(atributo) {
 fun MissionsScreen(
     viewModel: MisionesViewModel,
     onMissionCompleted: (Mision) -> Unit = {},
+    onMissionDeleted: (Mision) -> Unit = {},
+    onMissionReverted: (Mision) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var showSheet by remember { mutableStateOf(false) }
@@ -68,6 +74,16 @@ fun MissionsScreen(
                     onComplete = { 
                         if (viewModel.completarMision(it)) {
                             onMissionCompleted(mision)
+                        }
+                    },
+                    onDelete = {
+                        viewModel.borrarMision(it)
+                        onMissionDeleted(mision)
+                    },
+                    onRevert = {
+                        val revertedMission = viewModel.revertirMision(it)
+                        if (revertedMission != null) {
+                            onMissionReverted(revertedMission)
                         }
                     }
                 )
@@ -272,7 +288,9 @@ fun MissionImpactSelectionList(onImpactSelected: (NivelImpacto) -> Unit) {
 @Composable
 fun MissionItem(
     mision: Mision,
-    onComplete: (String) -> Unit
+    onComplete: (String) -> Unit,
+    onDelete: (String) -> Unit,
+    onRevert: (String) -> Unit
 ) {
     val progressAnim = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
@@ -346,12 +364,28 @@ fun MissionItem(
                     letterSpacing = 0.05.em
                 )
             }
-            Text(
-                text = if (mision.estaCompletada) "✓" else "+${mision.puntos} pts",
-                color = if (mision.estaCompletada) Color(0xFF2A4A2A) else Color(0xFFCC2222),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = if (mision.estaCompletada) "✓" else "+${mision.puntos} pts",
+                    color = if (mision.estaCompletada) Color(0xFF2A4A2A) else Color(0xFFCC2222),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                IconButton(
+                    onClick = { 
+                        if (mision.estaCompletada) onRevert(mision.id) else onDelete(mision.id) 
+                    },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = if (mision.estaCompletada) Icons.Filled.Refresh else Icons.Filled.Delete,
+                        contentDescription = if (mision.estaCompletada) "Revertir" else "Borrar",
+                        tint = Color(0xFF666666),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
         }
     }
 }

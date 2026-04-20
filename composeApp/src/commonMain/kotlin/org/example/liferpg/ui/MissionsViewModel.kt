@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import org.example.liferpg.model.TipoAtributo
 import org.example.liferpg.data.RepositorioProgreso
 import org.example.liferpg.data.MisionDto
+import kotlinx.datetime.todayIn
 import kotlin.random.Random
 
 data class Mision(
@@ -67,19 +68,35 @@ class MisionesViewModel : ViewModel() {
         return false
     }
 
+    fun borrarMision(id: String) {
+        val i = misiones.indexOfFirst { it.id == id }
+        if (i != -1) {
+            misiones.removeAt(i)
+            guardarMisionesState()
+        }
+    }
+
+    fun revertirMision(id: String): Mision? {
+        val i = misiones.indexOfFirst { it.id == id }
+        if (i != -1 && misiones[i].estaCompletada) {
+            misiones[i] = misiones[i].copy(estaCompletada = false)
+            guardarMisionesState()
+            return misiones[i]
+        }
+        return null
+    }
+
     fun limpiarCompletadasParaNuevoDia() {
-        // Los puntos se sumarían a los atributos aquí antes de borrar
-        misiones.removeAll { it.estaCompletada }
+        misiones.clear()
         guardarMisionesState()
     }
 
     private fun comprobarNuevoDia() {
-        // En una implementación real:
-        // val ultimaFechaAbierta = sharedPreferences.getLong("ultimaFechaAbierta", 0)
-        // var hoy = System.currentTimeMillis() // normalizado al inicio del día
-        // if (ultimaFechaAbierta != hoy) {
-        //     limpiarCompletadasParaNuevoDia()
-        //     sharedPreferences.edit().putLong("ultimaFechaAbierta", hoy).apply()
-        // }
+        val ultimaFecha = repositorio.getUltimaFecha()
+        val hoy = kotlinx.datetime.Clock.System.todayIn(kotlinx.datetime.TimeZone.currentSystemDefault()).toString()
+        if (ultimaFecha.isNotEmpty() && ultimaFecha != hoy) {
+            limpiarCompletadasParaNuevoDia()
+        }
+        repositorio.guardarUltimaFecha(hoy)
     }
 }

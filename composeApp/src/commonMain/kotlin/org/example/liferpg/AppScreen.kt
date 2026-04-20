@@ -8,6 +8,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,8 +56,6 @@ import liferpg.composeapp.generated.resources.Res
 import liferpg.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 
-import org.example.liferpg.ui.TaskRegistrationSheet
-import org.example.liferpg.model.CalculadoraAtributos
 import org.example.liferpg.ui.MissionsScreen
 import org.example.liferpg.ui.MisionesViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -97,7 +98,6 @@ fun MainScreen() {
         repositorio.guardarAtributosValores(mapaValores)
     }
 
-    var showTaskSheet by remember { mutableStateOf(false) }
     var currentTab by remember { mutableStateOf("HOME") }
     val misionesViewModel: MisionesViewModel = viewModel()
 
@@ -131,27 +131,21 @@ fun MainScreen() {
                                 atributo
                             }
                         }
+                    },
+                    onMissionReverted = { misionRevertida ->
+                        atributos = atributos.map { atributo ->
+                            if (atributo.nombre.equals(misionRevertida.nombreAtributo, ignoreCase = true)) {
+                                // Asegurar que no baja del mínimo (asumiendo 0 o el valor base)
+                                atributo.copy(valor = maxOf(0f, atributo.valor - misionRevertida.puntos))
+                            } else {
+                                atributo
+                            }
+                        }
                     }
                 )
             }
         }
         
-        if (showTaskSheet) {
-            TaskRegistrationSheet(
-                onDismiss = { showTaskSheet = false },
-                onConfirm = { tipoAtributo, nombreActividad, impacto ->
-                    val puntos = CalculadoraAtributos.calcularPuntos(impacto)
-                    atributos = atributos.map { atributo ->
-                        if (atributo.nombre.equals(tipoAtributo.nombreVisible, ignoreCase = true)) {
-                            atributo.copy(valor = minOf(100f, atributo.valor + puntos))
-                        } else {
-                            atributo
-                        }
-                    }
-                    showTaskSheet = false
-                }
-            )
-        }
     }
 }
 
@@ -216,7 +210,12 @@ fun BottomNavigationBar(currentTab: String, onTabSelected: (String) -> Unit) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("H", color = if (currentTab == "HOME") RojoSangre else GrisTexto, fontWeight = FontWeight.Bold)
+                Icon(
+                    imageVector = Icons.Filled.Home,
+                    contentDescription = "Home",
+                    tint = if (currentTab == "HOME") RojoSangre else GrisTexto,
+                    modifier = Modifier.size(24.dp)
+                )
             }
             Spacer(Modifier.height(4.dp))
             Text("HOME", color = if (currentTab == "HOME") RojoSangre else GrisTexto, fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -235,7 +234,12 @@ fun BottomNavigationBar(currentTab: String, onTabSelected: (String) -> Unit) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("T", color = if (currentTab == "TAREAS") RojoSangre else GrisTexto, fontWeight = FontWeight.Bold)
+                Icon(
+                    imageVector = Icons.Filled.List,
+                    contentDescription = "Tareas",
+                    tint = if (currentTab == "TAREAS") RojoSangre else GrisTexto,
+                    modifier = Modifier.size(24.dp)
+                )
             }
             Spacer(Modifier.height(4.dp))
             Text("TAREAS", color = if (currentTab == "TAREAS") RojoSangre else GrisTexto, fontSize = 10.sp, fontWeight = FontWeight.Bold)

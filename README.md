@@ -109,6 +109,26 @@ UI (Composables) → ViewModel → Repository → Multiplatform Settings (disco)
 
 ---
 
+## Tests
+
+```bash
+# Ejecutar todos los tests unitarios
+./gradlew :composeApp:testDebugUnitTest
+
+# Ejecutar solo los tests de RepositorioProgreso
+./gradlew :composeApp:testDebugUnitTest --tests "org.example.liferpg.data.RepositorioProgresoTest"
+```
+
+### Cobertura actual
+
+| Clase | Tests | Qué se verifica |
+|:---|:---:|:---|
+| `RepositorioProgreso` | 19 | Round-trips de atributos y misiones, recuperación ante JSON corrupto, aislamiento entre claves, caracteres especiales, sobreescritura, tipos de atributo desconocidos |
+
+Los tests usan `MapSettings` (in-memory) de `multiplatform-settings-test`, sin necesidad de contexto Android ni dispositivo físico.
+
+---
+
 ## Cómo ejecutar
 
 **Requisitos**: JDK 17+, Android Studio (Ladybug 2024.2+ recomendado), Xcode 15+ para iOS.
@@ -123,19 +143,6 @@ O abrir directamente en Android Studio y darle a Run.
 
 ### iOS
 Desde Android Studio con el plugin de KMP, o abrir `iosApp/iosApp.xcodeproj` en Xcode.
-
----
-
-## Roadmap
-
-- [ ] Reseteo diario automático de misiones completadas
-- [ ] Mejorar sistema de puntuación para hacerlo sostenible a largo plazo (topes diarios, decaimiento)
-- [ ] Sistema de logros al alcanzar hitos
-- [ ] Historial de progreso (gráficos semanales/mensuales)
-- [ ] Notificaciones para misiones pendientes
-- [ ] Perfil de usuario con nivel global
-- [ ] Export/import del progreso
-- [ ] Soporte Desktop (JVM)
 
 ---
 
